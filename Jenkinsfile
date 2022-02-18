@@ -30,13 +30,17 @@ spec:
         path: /usr/bin/docker
 """
 }
+  environment {
+        GIT_COMMIT_SHORT = sh(
+                script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
+                returnStdout: true
+        )
    }
     stages {
         stage('Build') {
             steps {
                 sh 'which docker'
                 script {
-                    GIT_COMMIT_SHORT=`git rev-parse --short=8 ${GIT_COMMIT}`
                     docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
                 }
             }
