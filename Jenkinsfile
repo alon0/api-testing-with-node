@@ -34,9 +34,11 @@ spec:
     stages {
         stage('Build') {
             steps {
-                sh 'env'
-                sh 'echo $PATH'
-                sh 'docker build -t api-testing-with-node:${GIT_COMMIT} .'
+                sh 'which docker'
+                script {
+                    GIT_COMMIT_SHORT=$(cat ${GIT_COMMIT} | cut -c1-7)
+                    docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
+                }
             }
         }
         stage('Unit Tests') {
