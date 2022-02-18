@@ -39,10 +39,10 @@ spec:
     stages {
         stage('Build') {
             steps {
-                sh 'which docker'
-                script {
-                    docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
-                }
+                sh '''
+                  which docker'
+                  docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
+                '''
             }
         }
         stage('Unit Tests') {
