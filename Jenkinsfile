@@ -40,8 +40,12 @@ spec:
     stages {
         stage('Build') {
             steps {
-                sh 'whereis docker'
-                sh 'docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .'
+                buildImage {
+                    name = 'api-testing-with-node:${GIT_COMMIT_SHORT}'
+                    path = './'
+                }
+                // sh 'whereis docker'
+                // sh 'docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .'
             }
         }
         stage('Unit Tests') {
