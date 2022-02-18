@@ -40,7 +40,7 @@ spec:
     stages {
         stage('Build') {
             steps {
-                sh 'which docker'
+                sh 'whereis docker'
                 sh 'docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .'
             }
         }
