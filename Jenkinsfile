@@ -40,9 +40,9 @@ spec:
     stages {
         stage('Build') {
             steps {
-                buildImage {
-                    name = 'api-testing-with-node:${GIT_COMMIT_SHORT}'
-                    path = './'
+                script {
+                    def dockerImage = docker.build("api-testing-with-node:${GIT_COMMIT_SHORT}")
+                    dockerImage.push()
                 }
                 // sh 'whereis docker'
                 // sh 'docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .'
