@@ -40,9 +40,9 @@ spec:
         stage('Build') {
             steps {
                 sh '''
-                  which docker
-                  docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
-                '''
+                    which docker
+                    docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
+                  '''
             }
         }
         stage('Unit Tests') {
