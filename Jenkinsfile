@@ -1,9 +1,15 @@
 pipeline {
-  agent {
-    kubernetes {
-      label 'jenkins-agent'
-      defaultContainer 'jnlp'
-      yaml """
+    environment {
+        GIT_COMMIT_SHORT = sh(
+                script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
+                returnStdout: true
+        )
+   }
+    agent {
+        kubernetes {
+            label 'jenkins-agent'
+            defaultContainer 'jnlp'
+            yaml '''
 apiVersion: v1
 kind: Pod
 metadata:
@@ -28,14 +34,9 @@ spec:
     - name: docker-bin
       hostPath:
         path: /usr/bin/docker
-"""
-      }
-  environment {
-        GIT_COMMIT_SHORT = sh(
-                script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
-                returnStdout: true
-        )
-  }
+'''
+        }
+    }
     stages {
         stage('Build') {
             steps {
@@ -54,5 +55,4 @@ spec:
             }
         }
     }
-  }
 }
