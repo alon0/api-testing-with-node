@@ -34,6 +34,8 @@ spec:
     stages {
         stage('Build') {
             steps {
+                sh 'env'
+                sh 'echo $PATH'
                 sh 'docker build -t api-testing-with-node:${GIT_COMMIT} .'
             }
         }
