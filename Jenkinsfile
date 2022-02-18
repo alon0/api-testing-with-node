@@ -1,7 +1,7 @@
 pipeline {
   agent {
     kubernetes {
-      label 'api-testing'
+      label 'jenkins-agent'
       defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
@@ -19,10 +19,15 @@ spec:
     volumeMounts:
     - mountPath: /var/run/docker.sock
       name: docker-sock
+    - mountPath: /usr/bin/docker
+      name: docker-bin
   volumes:
     - name: docker-sock
       hostPath:
         path: /var/run/docker.sock
+    - name: docker-bin
+      hostPath:
+        path: /usr/bin/docker
 """
 }
    }
