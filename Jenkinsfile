@@ -29,13 +29,13 @@ spec:
       hostPath:
         path: /usr/bin/docker
 """
-}
+      }
   environment {
         GIT_COMMIT_SHORT = sh(
                 script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
                 returnStdout: true
         )
-   }
+  }
     stages {
         stage('Build') {
             steps {
@@ -54,4 +54,5 @@ spec:
             }
         }
     }
+  }
 }
