@@ -1,30 +1,45 @@
 pipeline {
-    agent any
-    // agent {
-    //     docker {
-    //         image 'node:6-alpine'
-    //         args '-p 3000:3000'
-    //     }
-    // }
-    // environment {
-    //     CI = 'true'
-    // }
+  agent {
+    kubernetes {
+      label 'api-testing'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  component: ci
+spec:
+  # Use service account that can deploy to all namespaces
+  serviceAccountName: default
+  containers:
+  - name: docker
+    image: docker:latest
+    tty: true
+    volumeMounts:
+    - mountPath: /var/run/docker.sock
+      name: docker-sock
+  volumes:
+    - name: docker-sock
+      hostPath:
+        path: /var/run/docker.sock
+"""
+}
+   }
     stages {
         stage('Build') {
             steps {
-                sh 'docker build -t api-testing-with-node:${BRANCH_NAME} .'
+                sh 'docker build -t api-testing-with-node:${GIT_COMMIT} .'
             }
         }
-        stage('Test') {
+        stage('Unit Tests') {
             steps {
-                sh './jenkins/scripts/test.sh'
+                sh 'echo "Unit Tests"'
             }
         }
-        stage('Deliver') {
+        stage('Linting') {
             steps {
-                sh './jenkins/scripts/deliver.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                sh './jenkins/scripts/kill.sh'
+                sh 'echo "Linting"'
             }
         }
     }
