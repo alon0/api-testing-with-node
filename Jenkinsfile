@@ -36,7 +36,7 @@ spec:
             steps {
                 sh 'which docker'
                 script {
-                    GIT_COMMIT_SHORT=$(cat '${GIT_COMMIT}' | cut -c1-7)
+                    GIT_COMMIT_SHORT=`git rev-parse --short=8 ${GIT_COMMIT}`
                     docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
                 }
             }
