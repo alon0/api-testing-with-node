@@ -44,23 +44,8 @@ spec:
                 container('docker') {
                     sh """
                                 docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
-                                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                                docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
                                                         """
                 }
-            // agent {
-            //     dockerfile {
-            //         filename 'Dockerfile'
-            //         dir '.'
-            //         label 'api-testing:${GIT_COMMIT_SHORT}'
-            //     }
-            // steps {
-            //     script {
-            //         def dockerImage = docker.build("api-testing:${GIT_COMMIT_SHORT}")
-            //         dockerImage.push()
-            //     }
-                // sh 'whereis docker'
-                // sh 'docker build -t api-testing:${GIT_COMMIT_SHORT} .'
             }
         }
         stage('Unit Tests') {
@@ -71,6 +56,16 @@ spec:
         stage('Linting') {
             steps {
                 sh 'echo "Linting"'
+            }
+        }
+        stage('Upload') {
+            steps {
+                container('docker') {
+                    sh """
+                                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                                docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
+                                                        """
+                }
             }
         }
     }
