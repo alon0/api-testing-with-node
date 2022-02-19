@@ -50,7 +50,11 @@ spec:
         }
         stage('Unit Tests') {
             steps {
-                sh 'echo "Unit Tests"'
+                container('docker') {
+                    sh """
+                                docker run -it $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} npm test
+                                                        """
+                }
             }
         }
         stage('Linting') {
