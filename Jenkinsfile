@@ -28,15 +28,15 @@ podTemplate(yaml: '''
                       path: /usr/bin/docker
 '''
   ) {
-  environment {
-      GIT_COMMIT_SHORT = sh(
-              script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
-              returnStdout: true
-      )
-      DOCKERHUB_CREDENTIALS=credentials('dockerHub')
-  }
   node(POD_LABEL) {
     stage('Build') {
+      environment {
+        GIT_COMMIT_SHORT = sh(
+                script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
+                returnStdout: true
+        )
+        DOCKERHUB_CREDENTIALS=credentials('dockerHub')
+      }
       container('docker') {
         sh '''
           env
