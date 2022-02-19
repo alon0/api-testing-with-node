@@ -39,12 +39,18 @@ spec:
     }
     stages {
         stage('Build') {
-            agent {
-                dockerfile {
-                    filename 'Dockerfile'
-                    dir '.'
-                    label 'api-testing-with-node:${GIT_COMMIT_SHORT}'
+            steps {
+                container('docker') {
+                    sh """
+                                docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
+                                                        """
                 }
+            // agent {
+            //     dockerfile {
+            //         filename 'Dockerfile'
+            //         dir '.'
+            //         label 'api-testing-with-node:${GIT_COMMIT_SHORT}'
+            //     }
             // steps {
             //     script {
             //         def dockerImage = docker.build("api-testing-with-node:${GIT_COMMIT_SHORT}")
