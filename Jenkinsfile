@@ -31,6 +31,8 @@ pipeline {
                 - name: node
                   image: node
                   tty: true
+                  command: ["/bin/bash"]
+                  args: ["-c", "npm start"]
                 volumes:
                   - name: docker-sock
                     hostPath:
