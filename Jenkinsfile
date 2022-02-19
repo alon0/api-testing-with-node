@@ -31,8 +31,6 @@ pipeline {
                 - name: node
                   image: node
                   tty: true
-                  command: ["/bin/bash"]
-                  args: ["-c", "npm start"]
                 volumes:
                   - name: docker-sock
                     hostPath:
@@ -46,7 +44,7 @@ pipeline {
     stages {
       stage('Build') {
         steps {
-          container('node') {
+          container('docker') {
             sh '''
               #npm install
               docker build -t api-testing:latest .
