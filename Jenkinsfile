@@ -49,18 +49,12 @@ pipeline {
               docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
             '''
           }
+        }
       }
-    }
       stage('Unit Tests') {
         steps {
           container('node') {
             sh '''
-              pwd
-              mkdir /usr/src/app
-              ln -s `pwd` /usr/src/app
-              cd /usr/src/app
-              pwd
-              ls -lah
               npm test
             '''
           }
