@@ -43,24 +43,24 @@ spec:
             steps {
                 container('docker') {
                     sh """
-                                docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
+                                docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
                                 echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                                docker push api-testing-with-node:${GIT_COMMIT_SHORT}
+                                docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
                                                         """
                 }
             // agent {
             //     dockerfile {
             //         filename 'Dockerfile'
             //         dir '.'
-            //         label 'api-testing-with-node:${GIT_COMMIT_SHORT}'
+            //         label 'api-testing:${GIT_COMMIT_SHORT}'
             //     }
             // steps {
             //     script {
-            //         def dockerImage = docker.build("api-testing-with-node:${GIT_COMMIT_SHORT}")
+            //         def dockerImage = docker.build("api-testing:${GIT_COMMIT_SHORT}")
             //         dockerImage.push()
             //     }
                 // sh 'whereis docker'
-                // sh 'docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .'
+                // sh 'docker build -t api-testing:${GIT_COMMIT_SHORT} .'
             }
         }
         stage('Unit Tests') {
