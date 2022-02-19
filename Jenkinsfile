@@ -28,7 +28,12 @@ pipeline {
                     name: docker-sock
                   - mountPath: /usr/bin/docker
                     name: docker-bin
-                - name: node
+                - name: source-code
+                  image: node
+                  tty: true
+                  ports:
+                    - container: 5000
+                - name: test
                   image: node
                   tty: true
                 volumes:
@@ -44,25 +49,25 @@ pipeline {
     stages {
       stage('Build') {
         steps {
-          container('docker') {
+          container('source-code') {
             sh '''
-              #npm install
-              docker build -t api-testing:latest .
+              npm install
+              npm start &
+              #docker build -t api-testing:latest .
             '''
-          sh '''
-            cd k8s
-            kubectl apply -f namespace.yaml 
-            kubectl -n ci apply -f deployment.yaml service.yaml
-          '''
+          // sh '''
+          //   cd k8s
+          //   kubectl apply -f namespace.yaml 
+          //   kubectl -n ci apply -f deployment.yaml service.yaml
+          // '''
           }
         }
       }
       stage('Unit Tests') {
         steps {
-          container('node') {
+          container('test') {
             sh '''
               npm install -g mocha chai
-              # npm start &
               make test
             '''
           }
