@@ -1,4 +1,16 @@
-podTemplate(yaml: '''
+pipeline {
+    environment {
+        GIT_COMMIT_SHORT = sh(
+                script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
+                returnStdout: true
+        )
+        DOCKERHUB_CREDENTIALS=credentials('dockerHub')
+   }
+    agent {
+        kubernetes {
+            label 'jenkins-agent'
+            defaultContainer 'jnlp'
+            yaml '''
               apiVersion: v1
               kind: Pod
               metadata:
@@ -26,43 +38,42 @@ podTemplate(yaml: '''
                   - name: docker-bin
                     hostPath:
                       path: /usr/bin/docker
-'''
-  ) {
-  node(POD_LABEL) {
-    stage('Build') {
-      environment {
-        GIT_COMMIT_SHORT = sh(
-                script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
-                returnStdout: true
-        )
-        DOCKERHUB_CREDENTIALS=credentials('dockerHub')
-      }
-      container('docker') {
-        sh '''
-          env
-          docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
-        '''
-      }
-        
+            '''
+        }
     }
-    stage('Unit Tests') {
-      container('node') {
-          sh '''
-            cd /usr/src/app
-            npm test
-          '''
+    stages {
+      stage('Build') {
+        steps {
+          container('docker') {
+            sh '''
+              docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
+            '''
+          }
       }
     }
-    stage('Linting') {
-      sh 'echo "Linting"'
-    }
-    stage('Upload') {
-      container('docker') {
-          sh '''
-            echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-            docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
-          '''
+      stage('Unit Tests') {
+        steps {
+          container('node') {
+            sh '''
+                npm test
+            '''
+          }
+        }
       }
+        stage('Linting') {
+            steps {
+                sh 'echo "Linting"'
+            }
+        }
+        stage('Upload') {
+            steps {
+                container('docker') {
+                    sh """
+                                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                                docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
+                                                        """
+                }
+            }
+        }
     }
-  }
 }
