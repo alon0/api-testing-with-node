@@ -53,7 +53,6 @@ pipeline {
             sh '''
               npm install
               npm start &
-              #docker build -t api-testing:latest .
             '''
           // sh '''
           //   cd k8s
@@ -78,13 +77,14 @@ pipeline {
                 sh 'echo "Linting"'
             }
         }
-        stage('Upload') {
-            steps {
-                container('docker') {
-                    sh """
-                                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                                docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
-                                                        """
+        stage('Docker Buil and Upload') {
+          steps {
+            container('docker') {
+              sh '''
+                docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
+                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
+              ''' 
                 }
             }
         }
