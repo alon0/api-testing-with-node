@@ -32,7 +32,7 @@ pipeline {
                   image: node
                   tty: true
                   ports:
-                    - container: 5000
+                    - containerPort: 5000
                 - name: test
                   image: node
                   tty: true
