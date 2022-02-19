@@ -31,7 +31,7 @@ podTemplate(yaml: '''
                       path: /usr/bin/docker
                   - name: source-code
                     hostPath:
-                      path: $(pwd)
+                      path: ./
 '''
   ) {
   environment {
