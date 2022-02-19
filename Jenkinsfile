@@ -56,7 +56,7 @@ pipeline {
           container('node') {
             sh '''
               npm install -g mocha chai
-              npm start
+              npm start &
               make test
             '''
           }
