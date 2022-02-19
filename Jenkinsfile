@@ -55,6 +55,7 @@ pipeline {
         steps {
           container('node') {
             sh '''
+              npm install -g mocha
               npm test
             '''
           }
