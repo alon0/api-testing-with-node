@@ -55,7 +55,10 @@ pipeline {
         steps {
           container('node') {
             sh '''
-                npm test
+              mkdir /usr/src/app
+              ln -s `pwd` /usr/src/app
+              cd /usr/src/app
+              npm test
             '''
           }
         }
