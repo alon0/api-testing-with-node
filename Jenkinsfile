@@ -48,8 +48,14 @@ pipeline {
         steps {
           container('node') {
             sh '''
-              npm install
+              #npm install
+              docker build -t api-testing:latest .
             '''
+          sh '''
+            cd k8s
+            kubectl apply -f namespace.yaml 
+            kubectl -n ci apply -f deployment.yaml service.yaml
+          '''
           }
         }
       }
@@ -58,7 +64,7 @@ pipeline {
           container('node') {
             sh '''
               npm install -g mocha chai
-              npm start &
+              # npm start &
               make test
             '''
           }
