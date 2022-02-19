@@ -4,6 +4,7 @@ pipeline {
                 script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
                 returnStdout: true
         )
+        DOCKERHUB_CREDENTIALS=credentials('dockerHub')
    }
     agent {
         kubernetes {
@@ -43,6 +44,8 @@ spec:
                 container('docker') {
                     sh """
                                 docker build -t api-testing-with-node:${GIT_COMMIT_SHORT} .
+                                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                                docker push api-testing-with-node:${GIT_COMMIT_SHORT}
                                                         """
                 }
             // agent {
