@@ -42,20 +42,21 @@ pipeline {
         }
     }
     stages {
-      stage('Build') {
-        steps {
-          container('docker') {
-            sh '''
-              docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
-            '''
-          }
-        }
-      }
+      // stage('Build') {
+      //   steps {
+      //     container('docker') {
+      //       sh '''
+      //         docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
+      //       '''
+      //     }
+      //   }
+      // }
       stage('Unit Tests') {
         steps {
           container('node') {
             sh '''
-              npm install -g mocha
+              npm install -g mocha chai
+              npm start
               npm test
             '''
           }
