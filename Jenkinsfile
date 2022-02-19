@@ -19,9 +19,6 @@ podTemplate(yaml: '''
                 - name: node
                   image: node
                   tty: true
-                  volumeMounts:
-                  - mountPath: /usr/src/app
-                    name: source-code
                 volumes:
                   - name: docker-sock
                     hostPath:
@@ -29,9 +26,6 @@ podTemplate(yaml: '''
                   - name: docker-bin
                     hostPath:
                       path: /usr/bin/docker
-                  - name: source-code
-                    hostPath:
-                      path: ./
 '''
   ) {
   environment {
@@ -45,6 +39,7 @@ podTemplate(yaml: '''
     stage('Build') {
       container('docker') {
         sh '''
+          env
           docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
         '''
       }
