@@ -76,7 +76,8 @@ pipeline {
           steps {
             container('test') {
               sh '''
-                npm install -g eslint @eslint/create-config
+                npm install -g eslint 
+                npm install @eslint/create-config
                 npm init @eslint/config
                 eslint *.js
               '''
