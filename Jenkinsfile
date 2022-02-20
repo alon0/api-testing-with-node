@@ -79,6 +79,8 @@ pipeline {
                 npm install -g eslint 
                 npm install @eslint/create-config
                 # npm init @eslint/config
+                # Debug
+                ls -al
                 eslint -c .eslintrc.yml *.js
               '''
             }
