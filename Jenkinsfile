@@ -73,8 +73,12 @@ pipeline {
         }
       }
         stage('Linting') {
-            steps {
-                sh 'echo "Linting"'
+          steps {
+            sh '''
+              npm install -g eslint
+              npm init @eslint/config
+              ./node_modules/.bin/eslint *.js
+            '''
             }
         }
         stage('Docker Buil and Upload') {
