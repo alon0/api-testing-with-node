@@ -78,7 +78,7 @@ pipeline {
               sh '''
                 npm install -g eslint @eslint/create-config
                 npm init @eslint/config
-                ./node_modules/.bin/eslint *.js
+                eslint *.js
               '''
             }
           }
