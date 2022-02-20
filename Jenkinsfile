@@ -82,7 +82,7 @@ pipeline {
                 # Debug
                 pwd
                 ls -al
-                eslint -c .eslintrc.js *.js
+                eslint -c .eslintrc.json *.js
               '''
             }
           }
