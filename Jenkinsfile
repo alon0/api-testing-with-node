@@ -80,6 +80,7 @@ pipeline {
                 npm install @eslint/create-config
                 # npm init @eslint/config
                 # Debug
+                pwd
                 ls -al
                 eslint -c .eslintrc.yml *.js
               '''
