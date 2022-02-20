@@ -74,20 +74,24 @@ pipeline {
       }
         stage('Linting') {
           steps {
-            sh '''
-              npm install -g eslint
-              npm init @eslint/config
-              ./node_modules/.bin/eslint *.js
-            '''
+            container('test') {
+              sh '''
+                npm install -g eslint
+                npm init @eslint/config
+                ./node_modules/.bin/eslint *.js
+              '''
             }
+          }
         }
         stage('Docker Buil and Upload') {
           steps {
             container('docker') {
               sh '''
-                docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
+                # docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
+                docker build -t alon0/devops-proj/api-testing:${GIT_COMMIT_SHORT} .
                 echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
+                # docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
+                docker push alon0/devops-proj/api-testing:${GIT_COMMIT_SHORT}
               ''' 
                 }
             }
