@@ -34,7 +34,7 @@ pipeline {
                   ports:
                     - containerPort: 5000
                 - name: helm
-                  image: alpine/helm:v2.9.1
+                  image: alpine/helm:latest
                 - name: test
                   image: node
                   tty: true
