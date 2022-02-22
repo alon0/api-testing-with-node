@@ -34,10 +34,9 @@ pipeline {
                   ports:
                     - containerPort: 5000
                 - name: helm
-                  image: alpine/helm:latest
+                  image: "alpine/helm:latest"
                   tty: true
-                  command: tail 
-                  args: [ '-f', '/dev/null' ]
+                  command: ["tail", "-f", "/dev/null"]
                 - name: test
                   image: node
                   tty: true
