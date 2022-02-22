@@ -102,7 +102,8 @@ pipeline {
         }
         stage('Deploy') {
           steps {
-            git branch: 'dev',
+            git credentialsId: 'git',
+                branch: 'dev',
                 url: 'git@github.com:alon0/DevOps-proj.git' 
             sh '''
               helm install -n ci -f k8s/api-testing-with-node/values-ci.yaml api-${BUILD_NUMBER} ./k8s/api-testing-with-node --set image.tag=${GIT_COMMIT_SHORT}
