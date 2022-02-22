@@ -87,7 +87,7 @@ pipeline {
             }
           }
         }
-        stage('Docker Buil and Upload') {
+        stage('Docker Build and Upload') {
           steps {
             container('docker') {
               sh '''
@@ -99,6 +99,16 @@ pipeline {
               ''' 
                 }
             }
+        }
+        stage('Deploy') {
+          steps {
+            git branch: 'dev',
+                url: 'git@github.com:alon0/DevOps-proj.git' 
+            sh '''
+              helm install -f k8s/api-testing-with-node/values-ci.yaml api-${BUILD_NUMBER} ./k8s/api-testing-with-node --set image.tag=${GIT_COMMIT_SHORT}
+              
+            ''' 
+              }
         }
     }
 }
