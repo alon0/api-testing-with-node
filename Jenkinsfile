@@ -36,7 +36,8 @@ pipeline {
                 - name: helm
                   image: alpine/helm:latest
                   tty: true
-                  command: cat
+                  command: tail 
+                  args: [ '-f', '/dev/null' ]
                 - name: test
                   image: node
                   tty: true
