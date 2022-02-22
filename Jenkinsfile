@@ -36,6 +36,7 @@ pipeline {
                 - name: helm
                   image: alpine/helm:latest
                   tty: true
+                  command: cat
                 - name: test
                   image: node
                   tty: true
