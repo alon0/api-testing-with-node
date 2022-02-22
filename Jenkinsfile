@@ -18,7 +18,7 @@ pipeline {
                 component: ci
               spec:
                 # Use service account that can deploy to all namespaces
-                serviceAccountName: default
+                serviceAccountName: jenkins
                 containers:
                 - name: docker
                   image: docker:latest
@@ -105,7 +105,7 @@ pipeline {
             git branch: 'dev',
                 url: 'git@github.com:alon0/DevOps-proj.git' 
             sh '''
-              helm install -f k8s/api-testing-with-node/values-ci.yaml api-${BUILD_NUMBER} ./k8s/api-testing-with-node --set image.tag=${GIT_COMMIT_SHORT}
+              helm install -n ci -f k8s/api-testing-with-node/values-ci.yaml api-${BUILD_NUMBER} ./k8s/api-testing-with-node --set image.tag=${GIT_COMMIT_SHORT}
               
             ''' 
               }
