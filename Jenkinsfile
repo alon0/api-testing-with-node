@@ -121,7 +121,7 @@ pipeline {
   post {
     success {
         echo 'executing api-testing-with-node-qa'
-        build(job: 'api-testing-with-node-qa', parameters: [string(name: 'BACKEND_API', value: "${BACKEND_API}")], [string(name: 'GIT_COMMIT_SHORT', value: "${GIT_COMMIT_SHORT}")])
+        build(job: 'api-testing-with-node-qa', parameters: [string(name: 'BACKEND_API', value: "${BACKEND_API}"), string(name: 'GIT_COMMIT_SHORT', value: "${GIT_COMMIT_SHORT}")])
     }
   }
 }
