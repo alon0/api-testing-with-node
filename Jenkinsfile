@@ -112,7 +112,7 @@ pipeline {
           sh '''
             NODE_PORT=$(kubectl get --namespace ci -o jsonpath="{.spec.ports[0].nodePort}" services build-${BUILD_NUMBER}-api-testing-with-node)
             NODE_IP=$(kubectl get nodes --namespace ci -o jsonpath="{.items[0].status.addresses[0].address}")
-            BACKEND_API=echo http://$NODE_IP:$NODE_PORT
+            BACKEND_API=`echo http://$NODE_IP:$NODE_PORT`
           '''
         }
       }
