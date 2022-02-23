@@ -5,6 +5,7 @@ pipeline {
       returnStdout: true
     )
     DOCKERHUB_CREDENTIALS=credentials('dockerHub')
+    BACKEND_API="DEFAULT"
   }
   agent {
     kubernetes {
@@ -109,10 +110,9 @@ pipeline {
           }
         container('kubectl') {
           sh '''
-            kubectl get po -n ci
             NODE_PORT=$(kubectl get --namespace ci -o jsonpath="{.spec.ports[0].nodePort}" services build-${BUILD_NUMBER}-api-testing-with-node)
             NODE_IP=$(kubectl get nodes --namespace ci -o jsonpath="{.items[0].status.addresses[0].address}")
-            echo http://$NODE_IP:$NODE_PORT
+            BACKEND_API=echo http://$NODE_IP:$NODE_PORT
           '''
         }
       }
@@ -121,7 +121,7 @@ pipeline {
   post {
     success {
         echo 'executing api-testing-with-node-qa'
-        build job: 'api-testing-with-node-qa', parameters: [string(name: 'BACKEND_API', value: 'http://192.168.49.2:30701')]
+        build job: 'api-testing-with-node-qa', parameters: [string(name: 'BACKEND_API', value: '${BACKEND_API}')]
     }
   }
 }
