@@ -40,7 +40,7 @@ pipeline {
                 - name: kubectl
                   image: "rancher/kubectl:v1.23.3"
                   tty: true
-                  command: ["cat"]
+                  command: ["tail", "-f", "/dev/null"]
                 - name: test
                   image: node
                   tty: true
