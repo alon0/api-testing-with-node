@@ -124,7 +124,7 @@ pipeline {
         build job: 'api-testing-with-node-qa', 
           parameters: 
             [string(name: 'BACKEND_API', value: "${BACKEND_API}")],
-            [string(name: 'GIT_COMMIT_SHORT', value: "${GIT_COMMIT_SHORT}")],
+            [string(name: 'GIT_COMMIT_SHORT', value: "${GIT_COMMIT_SHORT}")]
     }
   }
 }
