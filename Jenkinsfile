@@ -38,7 +38,7 @@ pipeline {
                   tty: true
                   command: ["tail", "-f", "/dev/null"]
                 - name: kubectl
-                  image: "bitnami/kubectl:latest"
+                  image: "rancher/kubectl"
                   tty: true
                   command: ["cat"]
                 - name: test
@@ -62,11 +62,6 @@ pipeline {
               npm install
               npm start &
             '''
-          // sh '''
-          //   cd k8s
-          //   kubectl apply -f namespace.yaml 
-          //   kubectl -n ci apply -f deployment.yaml service.yaml
-          // '''
           }
         }
       }
@@ -86,10 +81,6 @@ pipeline {
               sh '''
                 npm install -g eslint 
                 npm install @eslint/create-config
-                # npm init @eslint/config
-                # Debug
-                pwd
-                ls -al
                 eslint -c .eslintrc.json *.js
               '''
             }
@@ -99,10 +90,8 @@ pipeline {
           steps {
             container('docker') {
               sh '''
-                # docker build -t $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT} .
                 docker build -t alon0/devops-proj:${GIT_COMMIT_SHORT} .
                 echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                # docker push $DOCKERHUB_CREDENTIALS_USR/api-testing:${GIT_COMMIT_SHORT}
                 docker push alon0/devops-proj:${GIT_COMMIT_SHORT}
               ''' 
                 }
