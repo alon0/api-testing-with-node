@@ -38,9 +38,9 @@ pipeline {
                   tty: true
                   command: ["tail", "-f", "/dev/null"]
                 - name: kubectl
-                  image: "rancher/kubectl:v1.23.3"
+                  image: "bitnami/kubectl:latest"
                   tty: true
-                  #command: ["tail", "-f", "/dev/null"]
+                  command: ["cat"]
                 - name: test
                   image: node
                   tty: true
@@ -109,9 +109,10 @@ pipeline {
               }
             container('kubectl') {
               sh '''
-                NODE_PORT=$(kubectl get --namespace ci -o jsonpath="{.spec.ports[0].nodePort}" services build-${BUILD_NUMBER}-api-testing-with-node)
-                NODE_IP=$(kubectl get nodes --namespace ci -o jsonpath="{.items[0].status.addresses[0].address}")
-                echo http://$NODE_IP:$NODE_PORT
+                kubectl get po -n ci
+                # NODE_PORT=$(kubectl get --namespace ci -o jsonpath="{.spec.ports[0].nodePort}" services build-${BUILD_NUMBER}-api-testing-with-node)
+                # NODE_IP=$(kubectl get nodes --namespace ci -o jsonpath="{.items[0].status.addresses[0].address}")
+                # echo http://$NODE_IP:$NODE_PORT
               '''
             }
           }
