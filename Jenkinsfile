@@ -129,7 +129,9 @@ pipeline {
     success {
         echo 'executing api-testing-with-node-qa'
         sh 'cat url.env'
-        build(job: 'api-testing-with-node-qa', parameters: [file(name: 'BACKEND_API', file: "url.env"), string(name: 'GIT_COMMIT_SHORT', value: "${GIT_COMMIT_SHORT}")])
+        script {backendApi = readFile('url.env').trim()}
+        echo "${backendApi}"
+        build(job: 'api-testing-with-node-qa', parameters: [string(name: 'BACKEND_API', value: "${backendApi}"), string(name: 'GIT_COMMIT_SHORT', value: "${GIT_COMMIT_SHORT}")])
     }
   }
 }
