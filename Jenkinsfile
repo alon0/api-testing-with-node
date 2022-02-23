@@ -38,7 +38,7 @@ pipeline {
                   tty: true
                   command: ["tail", "-f", "/dev/null"]
                 - name: kubectl
-                  image: "rancher/kubectl"
+                  image: "rancher/kubectl:v1.23.3"
                   tty: true
                   command: ["cat"]
                 - name: test
