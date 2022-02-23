@@ -38,7 +38,7 @@ pipeline {
             tty: true
             command: ["tail", "-f", "/dev/null"]
           - name: kubectl
-            image: "bitnami/kubectl:latest"
+            image: "sulemanhasib43/eks" #"bitnami/kubectl:latest"
             tty: true
             command: ["cat"]
           - name: test
@@ -107,14 +107,14 @@ pipeline {
             helm install -n ci -f k8s/api-testing-with-node/values-ci.yaml build-${BUILD_NUMBER} ./k8s/api-testing-with-node --set image.tag=${GIT_COMMIT_SHORT}
           ''' 
           }
-        // container('kubectl') {
-        //   sh '''
-        //     kubectl get po -n ci
-        //     # NODE_PORT=$(kubectl get --namespace ci -o jsonpath="{.spec.ports[0].nodePort}" services build-${BUILD_NUMBER}-api-testing-with-node)
-        //     # NODE_IP=$(kubectl get nodes --namespace ci -o jsonpath="{.items[0].status.addresses[0].address}")
-        //     # echo http://$NODE_IP:$NODE_PORT
-        //   '''
-        // }
+        container('kubectl') {
+          sh '''
+            kubectl get po -n ci
+            NODE_PORT=$(kubectl get --namespace ci -o jsonpath="{.spec.ports[0].nodePort}" services build-${BUILD_NUMBER}-api-testing-with-node)
+            NODE_IP=$(kubectl get nodes --namespace ci -o jsonpath="{.items[0].status.addresses[0].address}")
+            echo http://$NODE_IP:$NODE_PORT
+          '''
+        }
       }
     }
   }
