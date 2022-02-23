@@ -40,7 +40,7 @@ pipeline {
                 - name: kubectl
                   image: "bitnami/kubectl:latest"
                   tty: true
-                  command: ["tail", "-f", "/dev/null"]
+                  command: ["cat"]
                 - name: test
                   image: node
                   tty: true
