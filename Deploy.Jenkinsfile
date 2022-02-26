@@ -44,13 +44,13 @@ pipeline {
               branch: 'dev',
               url: 'git@github.com:alon0/DevOps-proj.git' 
           sh '''
-            helm install -n deployment -f k8s/api-testing-with-node/values-dep.yaml dep-${BUILD_NUMBER} ./k8s/api-testing-with-node --set image.tag=stable-${GIT_COMMIT_SHORT}
+            helm install -n deployment -f k8s/api-testing-with-node/values-dep.yaml deployment ./k8s/api-testing-with-node --set image.tag=stable-${GIT_COMMIT_SHORT}
           ''' 
           }
         container('kubectl') {
           sh '''
-            NODE_PORT=$(kubectl get --namespace ci -o jsonpath="{.spec.ports[0].nodePort}" services build-${BUILD_NUMBER}-api-testing-with-node)
-            NODE_IP=$(kubectl get nodes --namespace ci -o jsonpath="{.items[0].status.addresses[0].address}")
+            NODE_PORT=$(kubectl get --namespace deployment -o jsonpath="{.spec.ports[0].nodePort}" services build-${BUILD_NUMBER}-api-testing-with-node)
+            NODE_IP=$(kubectl get nodes --namespace deployment -o jsonpath="{.items[0].status.addresses[0].address}")
             BACKEND_API=`echo http://$NODE_IP:$NODE_PORT`
             echo $BACKEND_API > url.env
           '''
