@@ -44,7 +44,7 @@ pipeline {
               branch: 'dev',
               url: 'git@github.com:alon0/DevOps-proj.git' 
           sh '''
-            helm install -n deployment -f k8s/api-testing-with-node/values-dep.yaml deployment ./k8s/api-testing-with-node --set image.tag=stable-${GIT_COMMIT_SHORT}
+            helm upgrade -i --force -n deployment -f k8s/api-testing-with-node/values-dep.yaml deployment ./k8s/api-testing-with-node --set image.tag=stable-${GIT_COMMIT_SHORT}
           ''' 
           }
         container('kubectl') {
