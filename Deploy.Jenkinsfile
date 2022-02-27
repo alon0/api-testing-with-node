@@ -1,7 +1,8 @@
 pipeline {
-  // environment {
-  //   DOCKERHUB_CREDENTIALS=credentials('dockerHub')
-  // }
+  environment {
+    // DOCKERHUB_CREDENTIALS=credentials('dockerHub')
+    BACKEND_API="Default"
+  }
   agent {
     kubernetes {
       defaultContainer 'jnlp'
@@ -62,9 +63,12 @@ pipeline {
         script {backendApi = readFile('url.env').trim()}
         echo "${backendApi}"
         container('test') {
+          checkout([$class: 'GitSCM', branches: [[name: 'dev']], extensions: [], userRemoteConfigs: [[credentialsId: 'git', url: 'git@github.com:alon0/api-testing-with-node-qa.git']]])
           sh '''
             pwd
             ls -lah
+            echo ${backendApi}
+            echo ${BACKEND_API}
             export BACKEND_API=${backendApi}
             npm install
             npm install -g mocha chai
