@@ -9,7 +9,6 @@ pipeline {
   }
   agent {
     kubernetes {
-      // label 'jenkins-agent'
       defaultContainer 'jnlp'
       yaml '''
         apiVersion: v1
@@ -120,12 +119,6 @@ pipeline {
     }  
   }
   post {
-    // environment {
-    //   BACKEND_API = sh(
-    //     script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
-    //     returnStdout: true
-    //   )
-    // }
     success {
         echo 'executing api-testing-with-node-qa'
         sh 'cat url.env'

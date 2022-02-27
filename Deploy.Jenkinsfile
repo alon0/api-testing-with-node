@@ -1,8 +1,4 @@
 pipeline {
-  // environment {
-  //   // DOCKERHUB_CREDENTIALS=credentials('dockerHub')
-  //   // BACKEND_API="Default"
-  // }
   agent {
     kubernetes {
       defaultContainer 'jnlp'
