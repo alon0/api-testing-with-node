@@ -55,14 +55,16 @@ pipeline {
             echo $BACKEND_API > url.env
           '''
         }
-        script {backendApi = readFile('url.env').trim()}
-        echo "${backendApi}"
       }
     }
     stage('Execute QA Tests') {
       steps {
+        script {backendApi = readFile('url.env').trim()}
+        echo "${backendApi}"
         container('test') {
           sh '''
+            pwd
+            ls -lah
             export BACKEND_API=${backendApi}
             npm install
             npm install -g mocha chai
