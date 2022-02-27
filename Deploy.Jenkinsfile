@@ -60,16 +60,14 @@ pipeline {
     }
     stage('Execute QA Tests') {
       steps {
-        script {backendApi = readFile('url.env').trim()}
-        echo "${backendApi}"
+        script {BACKEND_API = readFile('url.env').trim()}
         container('test') {
           checkout([$class: 'GitSCM', branches: [[name: 'dev']], extensions: [], userRemoteConfigs: [[credentialsId: 'git', url: 'git@github.com:alon0/api-testing-with-node-qa.git']]])
           sh '''
             pwd
             ls -lah
-            echo ${backendApi}
             echo ${BACKEND_API}
-            export BACKEND_API=${backendApi}
+            export BACKEND_API=${BACKEND_API}
             npm install
             npm install -g mocha chai
             npm test
