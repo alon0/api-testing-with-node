@@ -63,11 +63,7 @@ pipeline {
         container('test') {
           checkout([$class: 'GitSCM', branches: [[name: 'dev']], extensions: [], userRemoteConfigs: [[credentialsId: 'git', url: 'git@github.com:alon0/api-testing-with-node-qa.git']]])
           sh '''
-            pwd
-            ls -lah
-            # echo ${BACKEND_API}
             export BACKEND_API=`cat url.env`
-            echo ${BACKEND_API}
             npm install
             npm install -g mocha chai
             npm test
@@ -76,14 +72,4 @@ pipeline {
       }
     }
   }
-  // post {
-
-  //   success {
-  //       echo 'executing api-testing-with-node-qa'
-  //       sh 'cat url.env'
-  //       script {backendApi = readFile('url.env').trim()}
-  //       echo "${backendApi}"
-  //       build(job: 'api-testing-with-node-qa', parameters: [string(name: 'BACKEND_API', value: "${backendApi}"), string(name: 'GIT_COMMIT_SHORT', value: "${GIT_COMMIT_SHORT}")])
-  //   }
-  // }
 }
