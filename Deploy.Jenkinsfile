@@ -1,4 +1,7 @@
 pipeline {
+  environment {
+      ARGOCD_SERVER="argocd-server"
+    }
   agent {
     kubernetes {
       defaultContainer 'jnlp'
@@ -12,16 +15,19 @@ pipeline {
           # Use service account that can deploy to all namespaces
           serviceAccountName: jenkins
           containers:
-          - name: helm
-            image: "alpine/helm:latest"
-            tty: true
-            command: ["tail", "-f", "/dev/null"]
+          # - name: helm
+          #   image: "alpine/helm:latest"
+          #   tty: true
+          #   command: ["tail", "-f", "/dev/null"]
           - name: kubectl
             image: "sulemanhasib43/eks" #"bitnami/kubectl:latest"
             tty: true
             command: ["cat"]
           - name: test
             image: node
+            tty: true
+          - name: argocd-cli
+            image: argoproj/argocli
             tty: true
           volumes:
             - name: docker-sock
@@ -36,18 +42,23 @@ pipeline {
   stages {
     stage('Deploy') {
       steps {
-        container('helm') {
-          git credentialsId: 'git',
-              branch: 'dev',
-              url: 'git@github.com:alon0/DevOps-proj.git' 
+        container('argocd-cli') {
+          // git credentialsId: 'git',
+          //     branch: 'dev',
+          //     url: 'git@github.com:alon0/DevOps-proj.git' 
           sh '''
-            helm upgrade -i --force -n deployment -f k8s/api-testing-with-node/values-dep.yaml deployment ./k8s/api-testing-with-node --set image.tag=stable-${GIT_COMMIT_SHORT}
+            ARGOCD_SERVER=$ARGOCD_SERVER argocd app create api-${BUILD_NUMBER} \
+              --repo 'git@github.com:alon0/DevOps-Proj.git' --path k8s/api-testing-with-node \
+              --values values-dep.yaml --dest-server https://kubernetes.default.svc \
+              --dest-namespace api-${BUILD_NUMBER} --sync-option CreateNamespace=true \
+              --project default --revision dev \
+              --parameter image.tag=stable-${GIT_COMMIT_SHORT} --upsert
           ''' 
           }
         container('kubectl') {
           sh '''
-            NODE_PORT=$(kubectl get --namespace deployment -o jsonpath="{.spec.ports[0].nodePort}" services deployment-api-testing-with-node)
-            NODE_IP=$(kubectl get nodes --namespace deployment -o jsonpath="{.items[0].status.addresses[0].address}")
+            NODE_PORT=$(kubectl get --namespace api-${BUILD_NUMBER} -o jsonpath="{.spec.ports[0].nodePort}" services api-${BUILD_NUMBER}-api-testing-with-node)
+            NODE_IP=$(kubectl get nodes --namespace api-${BUILD_NUMBER} -o jsonpath="{.items[0].status.addresses[0].address}")
             BACKEND_API=`echo http://$NODE_IP:$NODE_PORT`
             echo $BACKEND_API > url.env
           '''
