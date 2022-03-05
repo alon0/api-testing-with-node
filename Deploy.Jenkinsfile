@@ -47,10 +47,11 @@ pipeline {
         // git credentialsId: 'git',
         //     branch: 'dev',
         //     url: 'git@github.com:alon0/DevOps-proj.git' 
-        withCredentials([usernamePassword(credentialsId: 'git')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'git', keyFileVariable: 'key')]) {
           sh '''
             # git config --global user.email "jenkins@build.local"
             # git config --global user.name "build-"${BUILD_NUMBER}
+            GIT_SSH_COMMAND = "ssh -i $key"
             git clone --branch dev --single-branch git@github.com:alon0/DevOps-proj.git
             git checkout -b build-${BUILD_NUMBER}
             cd k8s/api-testing-with-node
