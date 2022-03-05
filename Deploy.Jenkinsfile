@@ -48,6 +48,8 @@ pipeline {
             branch: 'dev',
             url: 'git@github.com:alon0/DevOps-proj.git' 
         sh '''
+          git config --global user.email "jenkins@build.local"
+          git config --global user.name "build-"${BUILD_NUMBER}
           git checkout -b build-${BUILD_NUMBER}
           cd k8s/api-testing-with-node
           sed -i 's|: /|: /api-'${BUILD_NUMBER}'|g' values-dep.yaml
