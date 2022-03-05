@@ -49,7 +49,7 @@ pipeline {
           //     branch: 'dev',
           //     url: 'git@github.com:alon0/DevOps-proj.git' 
           sh '''
-            argocd login ${ARGOCD_SERVER} --username admin --password ${ARGOCD_SECRET}
+            argocd login ${ARGOCD_SERVER} --username admin --password ${ARGOCD_SECRET} --insecure
             ARGOCD_SERVER=${ARGOCD_SERVER} argocd app create api-${BUILD_NUMBER} \
               --repo 'git@github.com:alon0/DevOps-Proj.git' --path k8s/api-testing-with-node \
               --values values-dep.yaml --dest-server https://kubernetes.default.svc \
