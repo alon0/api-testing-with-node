@@ -51,13 +51,13 @@ pipeline {
           sh '''
             # git config --global user.email "jenkins@build.local"
             # git config --global user.name "build-"${BUILD_NUMBER}
-            GIT_SSH_COMMAND = "ssh -i $key" git clone --branch dev --single-branch git@github.com:alon0/DevOps-proj.git
+            GIT_SSH_COMMAND='ssh -i $key' git clone --branch dev --single-branch git@github.com:alon0/DevOps-proj.git
             git checkout -b build-${BUILD_NUMBER}
             cd k8s/api-testing-with-node
             sed -i 's|: /|: /api-'${BUILD_NUMBER}'|g' values-dep.yaml
             git add .
             git commit -m "Deploying api-"${BUILD_NUMBER}" with updated values-dep.yaml"
-            GIT_SSH_COMMAND = "ssh -i $key" git push -u origin build-${BUILD_NUMBER}
+            GIT_SSH_COMMAND='ssh -i $key' git push -u origin build-${BUILD_NUMBER}
           '''
                 } 
         // sh '''
