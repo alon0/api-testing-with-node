@@ -27,7 +27,7 @@ pipeline {
             image: node
             tty: true
           - name: argocd-cli
-            image: argoproj/argocli
+            image: sulemanhasib43/argo
             tty: true
             command: ["tail", "-f", "/dev/null"]
           volumes:
