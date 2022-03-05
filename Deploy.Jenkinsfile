@@ -83,8 +83,8 @@ pipeline {
               --project default --revision build-${BUILD_NUMBER} \
               --parameter image.tag=stable-${GIT_COMMIT_SHORT} \
               --sync-policy automated \
-              --sync-option Prune= ture \
-              --sync-option selfHeal= ture \
+              --sync-option Prune=ture \
+              --sync-option selfHeal=ture \
               #--parameter ingress.annotations."nginx.ingress.kubernetes.io/rewrite-target"="/api-"${BUILD_NUMBER} \
               --upsert
             argocd app get api-${BUILD_NUMBER}
