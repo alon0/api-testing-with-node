@@ -29,7 +29,7 @@ pipeline {
           - name: argocd-cli
             image: argoproj/argocli
             tty: true
-            command: ["cat"]
+            command: ["tail", "-f", "/dev/null"]
           volumes:
             - name: docker-sock
               hostPath:
