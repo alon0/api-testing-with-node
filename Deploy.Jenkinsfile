@@ -1,6 +1,6 @@
 pipeline {
   environment {
-      ARGOCD_SERVER="argocd-server"
+      ARGOCD_SERVER="argocd-server.argocd.svc.cluster.local"
       ARGOCD_SECRET = credentials('argocd-secret')
     }
   agent {
