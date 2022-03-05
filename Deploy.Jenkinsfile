@@ -44,9 +44,6 @@ pipeline {
   stages {
     stage('Deploy') {
       steps {
-        // git credentialsId: 'git',
-        //     branch: 'dev',
-        //     url: 'git@github.com:alon0/DevOps-proj.git' 
         withCredentials([sshUserPrivateKey(credentialsId: 'git', keyFileVariable: 'key')]) {
           sh '''
             git config --global user.email "jenkins@build.local"
@@ -62,17 +59,7 @@ pipeline {
             git commit -m "Deploying api-"${BUILD_NUMBER}" with updated values-dep.yaml"
             GIT_SSH_COMMAND='ssh -i $key' git push -u origin build-${BUILD_NUMBER}
           '''
-                } 
-        // sh '''
-        //   git config --global user.email "jenkins@build.local"
-        //   git config --global user.name "build-"${BUILD_NUMBER}
-        //   git checkout -b build-${BUILD_NUMBER}
-        //   cd k8s/api-testing-with-node
-        //   sed -i 's|: /|: /api-'${BUILD_NUMBER}'|g' values-dep.yaml
-        //   git add .
-        //   git commit -m "Deploying api-"${BUILD_NUMBER}" with updated values-dep.yaml"
-        //   git push -u origin build-${BUILD_NUMBER}
-        // '''
+        }
         container('argocd-cli') { 
           sh '''   
             argocd login ${ARGOCD_SERVER} --username admin --password ${ARGOCD_SECRET} --insecure
