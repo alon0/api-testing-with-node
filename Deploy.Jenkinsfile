@@ -45,18 +45,28 @@ pipeline {
     stage('Deploy') {
       steps {
         container('argocd-cli') {
-          // git credentialsId: 'git',
-          //     branch: 'dev',
-          //     url: 'git@github.com:alon0/DevOps-proj.git' 
+          git credentialsId: 'git',
+              branch: 'dev',
+              url: 'git@github.com:alon0/DevOps-proj.git' 
           sh '''
+            git checkout -b build-${BUILD_NUMBER}
+            cd k8s/api-testing-with-node
+            sed -i 's|: /|: /api-'${BUILD_NUMBER}'|g' values-dep.yaml
+            git add .
+            git commit -m "Deploying api-"${BUILD_NUMBER}" with updated values-dep.yaml"
+            git push -u origin build-${BUILD_NUMBER}
+            
             argocd login ${ARGOCD_SERVER} --username admin --password ${ARGOCD_SECRET} --insecure
             ARGOCD_SERVER=${ARGOCD_SERVER} argocd app create api-${BUILD_NUMBER} \
               --repo 'git@github.com:alon0/DevOps-Proj.git' --path k8s/api-testing-with-node \
               --values values-dep.yaml --dest-server https://kubernetes.default.svc \
               --dest-namespace api-${BUILD_NUMBER} --sync-option CreateNamespace=true \
-              --project default --revision dev \
+              --project default --revision build-${BUILD_NUMBER} \
               --parameter image.tag=stable-${GIT_COMMIT_SHORT} \
-              --parameter ingress.annotations."nginx\.ingress\.kubernetes\.io\/rewrite-target"="\/api-"${BUILD_NUMBER} \
+              --sync-policy automated \
+              --sync-option Prune= ture \
+              --sync-option selfHeal= ture \
+              #--parameter ingress.annotations."nginx.ingress.kubernetes.io/rewrite-target"="/api-"${BUILD_NUMBER} \
               --upsert
             argocd app get api-${BUILD_NUMBER}
             argocd app sync api-${BUILD_NUMBER}
