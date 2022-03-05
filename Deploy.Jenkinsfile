@@ -56,7 +56,7 @@ pipeline {
               --dest-namespace api-${BUILD_NUMBER} --sync-option CreateNamespace=true \
               --project default --revision dev \
               --parameter image.tag=stable-${GIT_COMMIT_SHORT} \
-              --parameter ingress.annotations.'nginx\.ingress\.kubernetes\.io\/rewrite-target'=/api-${BUILD_NUMBER} \
+              --parameter ingress.annotations.'nginx.ingress.kubernetes.io/rewrite-target'='/api-'${BUILD_NUMBER} \
               --upsert
             argocd app get api-${BUILD_NUMBER}
             argocd app sync api-${BUILD_NUMBER}
