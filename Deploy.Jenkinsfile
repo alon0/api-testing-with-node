@@ -53,7 +53,7 @@ pipeline {
               --values values-dep.yaml --dest-server https://kubernetes.default.svc \
               --dest-namespace api-${BUILD_NUMBER} --sync-option CreateNamespace=true \
               --project default --revision dev \
-              --parameter image.tag=stable-${GIT_COMMIT_SHORT} --upsert
+              --parameter image.tag=stable-${GIT_COMMIT_SHORT} --upsert --insecure
           ''' 
           }
         container('kubectl') {
