@@ -84,6 +84,11 @@ pipeline {
             NODE_IP=$(kubectl get nodes --namespace api-${BUILD_NUMBER} -o jsonpath="{.items[0].status.addresses[0].address}")
             BACKEND_API=`echo http://$NODE_IP:$NODE_PORT`
             echo $BACKEND_API > url.env
+            INGRESS_PATH=$(kubectl get --namespace api-${BUILD_NUMBER} -o 'jsonpath={.spec.rules[0].http.paths[0].path}' ingress api-${BUILD_NUMBER}-api-testing-with-node)
+            INGRESS_HOST=$(kubectl get --namespace api-${BUILD_NUMBER} -o 'jsonpath={.spec.rules[0].host}' ingress api-${BUILD_NUMBER}-api-testing-with-node)
+            INGRESS_URL=`echo http://$INGRESS_HOST$INGRESS_PATH`
+            echo $INGRESS_URL > ingress.env
+
           '''
         }
       }
