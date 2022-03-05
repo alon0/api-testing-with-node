@@ -56,6 +56,8 @@ pipeline {
               --dest-namespace api-${BUILD_NUMBER} --sync-option CreateNamespace=true \
               --project default --revision dev \
               --parameter image.tag=stable-${GIT_COMMIT_SHORT} --upsert --insecure
+            argocd app get api-${BUILD_NUMBER}
+            argocd app sync api-${BUILD_NUMBER} --insecure
           ''' 
           }
         container('kubectl') {
