@@ -55,9 +55,11 @@ pipeline {
               --values values-dep.yaml --dest-server https://kubernetes.default.svc \
               --dest-namespace api-${BUILD_NUMBER} --sync-option CreateNamespace=true \
               --project default --revision dev \
-              --parameter image.tag=stable-${GIT_COMMIT_SHORT} --upsert --insecure
+              --parameter image.tag=stable-${GIT_COMMIT_SHORT} \
+              --parameter ingress.annotations=nginx.ingress.kubernetes.io/rewrite-target: /api-${BUILD_NUMBER} \
+              --upsert
             argocd app get api-${BUILD_NUMBER}
-            argocd app sync api-${BUILD_NUMBER} --insecure
+            argocd app sync api-${BUILD_NUMBER}
           ''' 
           }
         container('kubectl') {
